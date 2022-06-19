@@ -4,7 +4,8 @@
   "description": "Bookshelf API",
   "main": "server.js",
   "scripts": {
-    "test": "nodemon ./src/server.js"
+    "test": "nodemon ./src/server.js",
+    "lint": "eslint ./src"
   },
   "keywords": [
     "API",
@@ -14,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "^20.2.2",
-    "nanoid": "^4.0.0"
+    "nanoid": "^3.1.22"
   },
   "devDependencies": {
     "eslint": "^8.18.0",
