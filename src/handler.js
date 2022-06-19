@@ -1,6 +1,21 @@
 const books = require('./books');
 const { nanoid } = require('nanoid');
 
+const validate = (name, readPage, pageCount, isSave = true) => {
+	const msg = isSave ? 'menambahkan' : 'memperbarui';
+	if (name === undefined) {
+		return {
+			status: 'fail',
+			message: `Gagal ${msg} buku. Mohon isi nama buku`
+		};
+	} else if (readPage > pageCount) {
+		return {
+			status: 'fail',
+			message: `Gagal ${msg} buku. readPage tidak boleh lebih besar dari pageCount`
+		};
+	}
+};
+
 const saveTheBook = (req, h) => {
 	const id = nanoid(16);
 	const {
@@ -11,19 +26,10 @@ const saveTheBook = (req, h) => {
 	const finished = pageCount === readPage;
 	const updatedAt = new Date().toISOString();
 	const insertedAt = updatedAt;
+	const isInvalid = validate(name, readPage, pageCount);
 
-	if (name === undefined) {
-		return h.response({
-			status: 'fail',
-			message: 'Gagal menambahkan buku. Mohon isi nama buku'
-		})
-			.code(400);
-	} else if (readPage > pageCount) {
-		return h.response({
-			status: 'fail',
-			message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount'
-		})
-			.code(400);
+	if (isInvalid) {
+		return h.response(isInvalid).code(400);
 	}
 
 	const newBook = {
@@ -84,10 +90,47 @@ const getOneBook = (req, h) => {
 		message: 'Buku tidak ditemukan'
 	})
 		.code(404);
+};
+
+const updateBook = (req, h) => {
+	const { bookId } = req.params;
+	const {
+		name, year, author,
+		summary, publisher, pageCount,
+		readPage, reading
+	} = req.payload;
+	const updatedAt = new Date().toISOString();
+	const index = books.findIndex(book => book.id === bookId);
+	const isInvalid = validate(name, readPage, pageCount, false);
+
+	if (isInvalid) {
+		return h.response(isInvalid).code(400);
+	}
+
+	if (index !== -1) {
+		books[index] = {
+			...books[index],
+			name, year, author,
+			summary, publisher, pageCount,
+			readPage, reading, updatedAt
+		};
+
+		return {
+			status: 'success',
+			message: 'Buku berhasil diperbarui'
+		}
+	}
+
+	return h.response({
+		status: 'fail',
+		message: 'Gagal memperbarui buku. Id tidak ditemukan'
+	})
+		.code(404);
 }
 
 module.exports = {
 	saveTheBook,
 	getAllBooks,
-	getOneBook
+	getOneBook,
+	updateBook
 };
