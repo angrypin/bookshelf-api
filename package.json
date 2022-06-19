@@ -1,0 +1,25 @@
+{
+  "name": "bookshelf",
+  "version": "1.0.0",
+  "description": "Bookshelf API",
+  "main": "server.js",
+  "scripts": {
+    "test": "nodemon ./src/server.js"
+  },
+  "keywords": [
+    "API",
+    "Dicoding"
+  ],
+  "author": "Angrypin",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^20.2.2",
+    "nanoid": "^4.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.18.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "nodemon": "^2.0.16"
+  }
+}
