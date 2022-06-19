@@ -61,14 +61,33 @@ const getAllBooks = () => ({
 				id, name, publisher
 			} = book;
 
-			return {id, name, publisher};
+			return { id, name, publisher };
 		})
 	}
 });
 
+const getOneBook = (req, h) => {
+	const { bookId } = req.params;
+	const book = books.filter(b => b.id === bookId)[0];
 
+	if (book !== undefined) {
+		return {
+			status: 'success',
+			data: {
+				book
+			}
+		}
+	}
+
+	return h.response({
+		status: 'fail',
+		message: 'Buku tidak ditemukan'
+	})
+		.code(404);
+}
 
 module.exports = {
 	saveTheBook,
-	getAllBooks
+	getAllBooks,
+	getOneBook
 };

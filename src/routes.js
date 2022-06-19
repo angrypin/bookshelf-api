@@ -1,5 +1,5 @@
 const {
-	saveTheBook, getAllBooks
+	saveTheBook, getAllBooks, getOneBook
 } = require('./handler');
 
 const routes = [{
@@ -10,6 +10,10 @@ const routes = [{
 	method: 'GET',
 	path: '/books',
 	handler: getAllBooks
+}, {
+	method: 'GET',
+	path: '/books/{bookId}',
+	handler: getOneBook
 }];
 
 module.exports = routes;
