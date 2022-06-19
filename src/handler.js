@@ -9,7 +9,8 @@ const saveTheBook = (req, h) => {
 		readPage, reading
 	} = req.payload;
 	const finished = pageCount === readPage;
-	const updatedAt = insertedAt = new Date().toISOString();
+	const updatedAt = new Date().toISOString();
+	const insertedAt = updatedAt;
 
 	if (name === undefined) {
 		return h.response({
@@ -52,6 +53,22 @@ const saveTheBook = (req, h) => {
 		.code(500);
 };
 
+const getAllBooks = () => ({
+	status: 'success',
+	data: {
+		books: books.map(book => {
+			const {
+				id, name, publisher
+			} = book;
+
+			return {id, name, publisher};
+		})
+	}
+});
+
+
+
 module.exports = {
-	saveTheBook
+	saveTheBook,
+	getAllBooks
 };
