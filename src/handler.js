@@ -4,9 +4,9 @@ const { nanoid } = require('nanoid');
 const validate = (name, readPage, pageCount, method) => {
 	let msg;
 
-	if (method === 'POST') {
+	if (method === 'post') {
 		msg = 'menambahkan';
-	} else if (method === 'PUT') {
+	} else if (method === 'put') {
 		msg = 'memperbarui';
 	}
 
@@ -85,11 +85,7 @@ const getAllBooks = (req) => {
 	return {
 		status: 'success',
 		data: {
-			books: lsBooks.map(book => {
-				const {
-					id, name, publisher
-				} = book;
-
+			books: lsBooks.map(({ id, name, publisher }) => {
 				return { id, name, publisher };
 			})
 		}

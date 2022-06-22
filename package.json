@@ -4,6 +4,7 @@
   "description": "Bookshelf API",
   "main": "server.js",
   "scripts": {
+    "start": "node ./src/server.js",
     "test": "nodemon ./src/server.js",
     "lint": "eslint ./src"
   },
