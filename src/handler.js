@@ -1,9 +1,15 @@
 const books = require('./books');
 const { nanoid } = require('nanoid');
-const { filter } = require('lodash');
 
-const validate = (name, readPage, pageCount, isSave = true) => {
-	const msg = isSave ? 'menambahkan' : 'memperbarui';
+const validate = (name, readPage, pageCount, method) => {
+	let msg;
+
+	if (method === 'POST') {
+		msg = 'menambahkan';
+	} else if (method === 'PUT') {
+		msg = 'memperbarui';
+	}
+
 	if (name === undefined) {
 		return {
 			status: 'fail',
@@ -28,7 +34,7 @@ const saveTheBook = (req, h) => {
 	const updatedAt = new Date().toISOString();
 	const insertedAt = updatedAt;
 	
-	const isInvalid = validate(name, readPage, pageCount);
+	const isInvalid = validate(name, readPage, pageCount, req.method);
 	if (isInvalid) {
 		return h.response(isInvalid).code(400);
 	}
@@ -65,11 +71,11 @@ const getAllBooks = (req) => {
 		
 	const reg = new RegExp(reqName, 'i');
 	const lsBooks = books.filter(({ name, reading, finished }) => {
-		if (reqName) {
+		if (reqName !== undefined) {
 			return name.match(reg);
-		} else if (isReading) {
+		} else if (isReading !== undefined) {
 			return reading == isReading;
-		} else if (isFinished) {
+		} else if (isFinished !== undefined) {
 			return finished == isFinished;
 		} else {
 			return true;
@@ -90,19 +96,6 @@ const getAllBooks = (req) => {
 	};
 };
 
-/* const getAllBooks = () => ({
-	status: 'success',
-	data: {
-		books: books.map(book => {
-			const {
-				id, name, publisher
-			} = book;
-
-			return { id, name, publisher };
-		})
-	}
-}); */
-
 const getOneBook = (req, h) => {
 	const { bookId } = req.params;
 	const book = books.filter(b => b.id === bookId)[0];
@@ -113,7 +106,7 @@ const getOneBook = (req, h) => {
 			data: {
 				book
 			}
-		}
+		};
 	}
 
 	return h.response({
@@ -132,7 +125,7 @@ const updateBook = (req, h) => {
 	} = req.payload;
 	const updatedAt = new Date().toISOString();
 	const index = books.findIndex(book => book.id === bookId);
-	const isInvalid = validate(name, readPage, pageCount, false);
+	const isInvalid = validate(name, readPage, pageCount, req.method);
 
 	if (isInvalid) {
 		return h.response(isInvalid).code(400);
@@ -149,7 +142,7 @@ const updateBook = (req, h) => {
 		return {
 			status: 'success',
 			message: 'Buku berhasil diperbarui'
-		}
+		};
 	}
 
 	return h.response({
@@ -157,7 +150,7 @@ const updateBook = (req, h) => {
 		message: 'Gagal memperbarui buku. Id tidak ditemukan'
 	})
 		.code(404);
-}
+};
 
 const deleteBook = (req, h) => {
 	const { bookId } = req.params;
@@ -169,7 +162,7 @@ const deleteBook = (req, h) => {
 		return {
 			status: 'success',
 			message: 'Buku berhasil dihapus'
-		}
+		};
 	}
 
 	return h.response({
@@ -177,7 +170,7 @@ const deleteBook = (req, h) => {
 		message: 'Buku gagal dihapus. Id tidak ditemukan'
 	})
 		.code(404);
-}
+};
 
 module.exports = {
 	saveTheBook,
