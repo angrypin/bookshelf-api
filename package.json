@@ -1,6 +1,6 @@
 {
   "name": "bookshelf",
-  "version": "1.0.0",
+  "version": "3.2.0",
   "description": "Bookshelf API",
   "main": "server.js",
   "scripts": {
@@ -23,5 +23,13 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "nodemon": "^2.0.16"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angrypin/bookshelf-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/angrypin/bookshelf-api/issues"
+  },
+  "homepage": "https://github.com/angrypin/bookshelf-api#readme"
 }
