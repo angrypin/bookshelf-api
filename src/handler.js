@@ -1,5 +1,6 @@
 const books = require('./books');
 const { nanoid } = require('nanoid');
+const { filter } = require('lodash');
 
 const validate = (name, readPage, pageCount, isSave = true) => {
 	const msg = isSave ? 'menambahkan' : 'memperbarui';
@@ -26,8 +27,8 @@ const saveTheBook = (req, h) => {
 	const finished = pageCount === readPage;
 	const updatedAt = new Date().toISOString();
 	const insertedAt = updatedAt;
+	
 	const isInvalid = validate(name, readPage, pageCount);
-
 	if (isInvalid) {
 		return h.response(isInvalid).code(400);
 	}
@@ -59,7 +60,37 @@ const saveTheBook = (req, h) => {
 		.code(500);
 };
 
-const getAllBooks = () => ({
+const getAllBooks = (req) => {
+	const { name: reqName, reading: isReading, finished: isFinished } = req.query;
+		
+	const reg = new RegExp(reqName, 'i');
+	const lsBooks = books.filter(({ name, reading, finished }) => {
+		if (reqName) {
+			return name.match(reg);
+		} else if (isReading) {
+			return reading == isReading;
+		} else if (isFinished) {
+			return finished == isFinished;
+		} else {
+			return true;
+		}
+	});
+
+	return {
+		status: 'success',
+		data: {
+			books: lsBooks.map(book => {
+				const {
+					id, name, publisher
+				} = book;
+
+				return { id, name, publisher };
+			})
+		}
+	};
+};
+
+/* const getAllBooks = () => ({
 	status: 'success',
 	data: {
 		books: books.map(book => {
@@ -70,7 +101,7 @@ const getAllBooks = () => ({
 			return { id, name, publisher };
 		})
 	}
-});
+}); */
 
 const getOneBook = (req, h) => {
 	const { bookId } = req.params;
@@ -145,7 +176,7 @@ const deleteBook = (req, h) => {
 		status: 'fail',
 		message: 'Buku gagal dihapus. Id tidak ditemukan'
 	})
-		.code(400);
+		.code(404);
 }
 
 module.exports = {
